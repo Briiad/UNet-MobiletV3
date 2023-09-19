@@ -2,6 +2,8 @@ pandas
 numpy
 matplotlib
 scikit-learn
-tensorflow
 torch
-cv2
+torchvision
+torchmetrics
+opencv-python
+kornia
