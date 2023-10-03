@@ -1,10 +1,8 @@
-pandas
-numpy
+# Conda packages
+opencv-python
 matplotlib
 scikit-learn
-torch
-torchvision
-torchmetrics
-opencv-python
-kornia
-tensorboardX
+pandas
+numpy
+scipy
+scikit-image
