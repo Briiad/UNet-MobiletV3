@@ -1,84 +1,21 @@
-import tensorflow as tf
-import numpy as np
 import cv2
-import pandas as pd
-import os
 
-class DataGenerator(tf.keras.utils.Sequence):
-    def __init__(self, data, batch_size=6, dim=(192, 256), n_channels=3, shuffle=True):
-        """
-        Initialization
-        """
-        self.data = data
-        self.indices = self.data.index.tolist()
-        self.dim = dim
-        self.n_channels = n_channels
-        self.batch_size = batch_size
-        self.shuffle = shuffle
-        self.min_depth = 0.1
-        self.on_epoch_end()
-
-    def __len__(self):
-        return int(np.ceil(len(self.data) / self.batch_size))
-
-    def __getitem__(self, index):
-        if (index + 1) * self.batch_size > len(self.indices):
-            self.batch_size = len(self.indices) - index * self.batch_size
-        # Generate one batch of data
-        # Generate indices of the batch
-        index = self.indices[index * self.batch_size : (index + 1) * self.batch_size]
-        # Find list of IDs
-        batch = [self.indices[k] for k in index]
-        x, y = self.data_generation(batch)
-
-        return x, y
-
-    def on_epoch_end(self):
-
-        """
-        Updates indexes after each epoch
-        """
-        self.index = np.arange(len(self.indices))
-        if self.shuffle == True:
-            np.random.shuffle(self.index)
-
-    def load(self, image_path, depth_map, mask):
-        """Load input and target image."""
-
-        image_ = cv2.imread(image_path)
-        image_ = cv2.cvtColor(image_, cv2.COLOR_BGR2RGB)
-        image_ = cv2.resize(image_, (self.dim[1], self.dim[0]))
-        image_ = image_ / 255.0
-
-        if self.n_channels == 1:
-            image_ = np.expand_dims(image_, axis=2)
-
-        depth_map = np.load(depth_map).squeeze()
-
-        mask = np.load(mask)
-        mask = mask > 0
-
-        max_depth = min(10., np.percentile(depth_map, 99))
-        depth_map = np.clip(depth_map, self.min_depth, max_depth)
-
-        depth_map = np.log(depth_map, where=mask)
-        depth_map = np.ma.masked_where(~mask, depth_map)
-
-        depth_map = cv2.resize(depth_map, (self.dim[1], self.dim[0]))
-        depth_map = np.expand_dims(depth_map, axis=2)
-
-        return image_, depth_map
-
-    def data_generation(self, batch):
-
-        x = np.empty((self.batch_size, *self.dim, self.n_channels))
-        y = np.empty((self.batch_size, *self.dim, 1))
-
-        for i, batch_id in enumerate(batch):
-            x[i,], y[i,] = self.load(
-                self.data["image"][batch_id],
-                self.data["depth"][batch_id],
-                self.data["mask"][batch_id],
-            )
-
-        return x, y
+class Dataset:
+    def __init__(self,df,tfms):
+        self.df = df
+        self.tfms=tfms
+    def open_im(self,p,gray=False):
+        im = cv2.imread(str(p))
+        im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY if gray else cv2.COLOR_BGR2RGB)
+        return im
+    
+    def __len__(self,):
+        return len(self.df)
+    
+    def __getitem__(self,idx):
+        s = self.df.iloc[idx,:]
+        im, dp = s[0],s[1]
+        im, dp = self.open_im(im), self.open_im(dp,True)
+        augs = self.tfms(image=im,mask=dp)
+        im, dp = augs['image'], augs['mask'] / 255.
+        return im, dp.unsqueeze(0)
