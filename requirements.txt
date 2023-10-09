@@ -4,6 +4,6 @@ matplotlib
 scikit-learn
 pandas
 numpy
-scipy
 tqdm
-albumentations
+tensorflow
+ipykernel
