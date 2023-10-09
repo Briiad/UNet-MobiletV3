@@ -11,10 +11,6 @@ class Model(nn.Module):
             classes=1,
         )
 
-    def trainable_encoder(self,trainable=True):
-        for p in self.model.encoder.parameters():
-            p.requires_grad = trainable
-
     def forward(self, x):
         return self.model(x)
     
