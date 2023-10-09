@@ -11,4 +11,35 @@ sudo apt-get install nvidia-jetpack
 ```
 3. Build OpenCV with CUDA support. Please refer to [this](https://github.com/JetsonHacksNano/buildOpenCV).
 
-## This Repository is Under Construction and Will be Updated Soon
+## Environment Setup
+1. Install MiniForge at [here](https://github.com/conda-forge/miniforge/releases)
+2. Set powershell to run as administrator and run the following commands:
+```powershell
+conda init powershell
+Set-ExecutionPolicy unrestricted
+conda config --set auto_activate_base false
+```
+3. Create a new conda environment
+```conda
+conda create -n <env_name> python=3.7
+```
+If you make the env inside vscode,
+```conda
+conda create --prefix .conda python=3.7
+```
+4. Activate the environment
+```conda
+conda activate <env_name>
+```
+5. Install the torch, dont forget to check the versions from [here](https://pytorch.org/get-started/previous-versions/)
+```conda
+conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cpuonly -c pytorch
+```
+6. Install torchmetrics
+```conda
+conda install -c conda-forge torchmetrics
+```
+7. Install other dependencies
+```pip
+pip install -r requirements.txt
+```
