@@ -6,9 +6,10 @@ class Model(nn.Module):
         super().__init__()
         self.model = smp.UnetPlusPlus(
             # MobileNetV3 Small with pretrained weights
-            encoder_name="timm-mobilenetv3_small_100",
+            encoder_name="timm-mobilenetv3_large_100",
+            encoder_weights="imagenet",
             in_channels=3,
-            classes=1,
+            classes=1
         )
 
     def forward(self, x):
