@@ -9,7 +9,9 @@ class Model(nn.Module):
             encoder_name="timm-mobilenetv3_large_100",
             encoder_weights="imagenet",
             in_channels=3,
-            classes=1
+            classes=1,
+            # activation function for the output of the network ()
+            activation="linear",
         )
 
     def forward(self, x):
