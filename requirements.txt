@@ -8,4 +8,5 @@ scipy
 tqdm
 albumentations
 ipykernel
-ipwidgets
+ipywidgets
+jupyter

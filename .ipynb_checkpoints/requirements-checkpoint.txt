@@ -1,0 +1,12 @@
+# Conda packages
+opencv-python
+matplotlib
+scikit-learn
+pandas
+numpy
+scipy
+tqdm
+albumentations
+ipykernel
+ipywidgets
+jupyter
