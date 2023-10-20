@@ -10,3 +10,4 @@ albumentations
 ipykernel
 ipywidgets
 jupyter
+segmentation_models_pytorch

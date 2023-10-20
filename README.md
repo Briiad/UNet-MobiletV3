@@ -33,7 +33,7 @@ conda activate <env_name>
 ```
 5. Install the torch, dont forget to check the versions from [here](https://pytorch.org/get-started/previous-versions/)
 ```conda
-conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cpuonly -c pytorch
+conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia
 ```
 6. Install torchmetrics
 ```conda
