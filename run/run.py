@@ -1,43 +1,60 @@
 import cv2
+import torch
+import torchvision.transforms as transforms
 import numpy as np
-import onnxruntime as ort
 
-# Load the ONNX model
-session = ort.InferenceSession('model.onnx')
+# Load the PyTorch model
+model = torch.load("path_to_your_model.pth")
+model.eval()
 
-# Define the input and output names
-input_name = session.get_inputs()[0].name
-output_name = session.get_outputs()[0].name
+# If you have CUDA support, use the GPU for inference
+if torch.cuda.is_available():
+    model = model.cuda()
 
-# Initialize the camera
+# Define the preprocessing steps
+preprocess = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize((192, 256)),  # Define the desired input size
+    transforms.ToTensorV2(),
+    # Add any other preprocessing steps your model requires
+])
+
+# Define the postprocessing steps
+postprocess = transforms.Compose([
+    # Add any preprocessing steps your model requires
+    transforms.ToPILImage(),
+    transforms.Resize((192, 256)),  # Define the desired output size
+    transforms.ToTensorV2()  # Converts PIL Image to numpy array
+])
+
+# Open the webcam
 cap = cv2.VideoCapture(0)
 
 while True:
-  # Capture frame-by-frame
-  ret, frame = cap.read()
+    # Capture frame-by-frame
+    ret, frame = cap.read()
 
-  # Preprocess the input image
-  img = cv2.resize(frame, (224, 224))
-  img = img.astype(np.float32)
-  img = img / 255.0
-  img = np.transpose(img, (2, 0, 1))
-  img = np.expand_dims(img, axis=0)
+    # Preprocess the frame
+    input_tensor = preprocess(frame).unsqueeze(0)
+    if torch.cuda.is_available():
+        input_tensor = input_tensor.cuda()
 
-  # Run the inference
-  pred = session.run([output_name], {input_name: img})[0]
+    # Predict depth
+    with torch.no_grad():
+        depth_map = model(input_tensor)
 
-  # Postprocess the output
-  pred = np.squeeze(pred)
-  pred = np.argmax(pred, axis=0)
-  pred = pred.astype(np.uint8)
+    # Convert depth map tensor to numpy for visualization
+    depth_map_np = depth_map.squeeze().cpu().numpy()
 
-  # Display the output
-  cv2.imshow('Output', pred)
+    # Post-process the depth map if necessary (color mapping, resizing back, etc.)
+    visualized_depth = postprocess(depth_map_np)  # Define this function based on your visualization needs
 
-  # Exit on ESC
-  if cv2.waitKey(1) == 27:
-    break
+    # Display the results
+    cv2.imshow('Depth Map', visualized_depth)
 
-# Release the camera and close all windows
+    # Break the loop if 'q' key is pressed
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
 cap.release()
 cv2.destroyAllWindows()
