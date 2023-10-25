@@ -19,9 +19,9 @@ while cap.isOpened():
     depth_map = depth_estimator(frame)
     color_depth = depth_estimator.draw_depth()
 
-    combined_image = np.hstack((frame, color_depth))
+    # combined_depth = np.hstack((frame, color_depth))
 
-    cv2.imshow("Depth", combined_image)
+    cv2.imshow("Depth", color_depth)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

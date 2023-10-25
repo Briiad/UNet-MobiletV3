@@ -25,7 +25,7 @@ class MobileUnet():
     return self.depth_map
   
   def prepare_input(self, img):
-    self.img_height, self.img_width, _ = img.shape[:2]
+    self.img_height, self.img_width = img.shape[:2]
 
     img_input = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img_input = cv2.resize(img_input, (self.input_width, self.input_height), interpolation=cv2.INTER_AREA) /255.0
@@ -35,8 +35,8 @@ class MobileUnet():
   
   def inference(self, input_tensor):
     start = time.time()
-    outputs = self.sess.run(self.output_names, {self.input_name[0]: input_tensor})[0]
-    print(time-time(), start)
+    outputs = self.sess.run(self.output_names, {self.input_names[0]: input_tensor})[0]
+    print(time.time(), start)
     return outputs
   
   def process_output(self, outputs):
@@ -48,13 +48,13 @@ class MobileUnet():
     self.min_depth = min_depth if min_depth < self.min_depth else self.min_depth
     self.max_depth = max_depth if max_depth > self.max_depth else self.max_depth
 
-    print(self.min_depth, self.max_depth)
+    # print(self.min_depth, self.max_depth)
     norm_depth = 255 * (self.depth_map - self.min_depth) / (self.max_depth - self.min_depth)
     norm_depth = 255 - norm_depth
 
-    color_depth = cv2.applyColorMap(cv2.convertScaleAbs(norm_depth, alpha=1), cv2.COLORMAP_PLASMA)
+    color_depth = cv2.applyColorMap(norm_depth.astype(np.uint8), cv2.COLORMAP_PLASMA)
 
-    return cv2.resize(color_depth, (self.image_width, self.image_height))
+    return cv2.resize(color_depth, (self.input_width, self.input_height))
   
   def get_input_details(self):
     model_inputs = self.sess.get_inputs()
