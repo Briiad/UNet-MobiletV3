@@ -1,31 +1,35 @@
 import numpy as np
 import onnxruntime as rt
 import cv2
+
 import torch
 
 # GPU
 print("CUDA is available: ", torch.cuda.is_available())
 
-def preprocess(frame, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.229, 0.229, 0.229]):
-    img_resized = cv2.resize(frame, input_size)
-    
-    img_np = img_resized / 255.0
-    img_np = (img_np - mean) / std
+class DepthEstimation:
+    def __init__(self, model_path):
+        self.sess = rt.InferenceSession(model_path)
 
-    tensor = np.transpose(img_np, (2, 0, 1))
-    tensor = np.expand_dims(tensor, axis=0).astype(np.float32)
+    def predict(self, img):
+        input_img = cv2.resize(img, (256, 192))
+        input_img = np.transpose(input_img, (2, 0, 1))
+        input_img = input_img.astype(np.float32) / 255.0
+        input_img = np.expand_dims(input_img, axis=0)
 
-    return tensor
+        input_name = self.sess.get_inputs()[0].name
+        outputs = self.sess.run(None, {input_name: input_img})
 
-def infer_depth(sess, input_tensor):
-    input_name = sess.get_inputs()[0].name
-    outputs = sess.run(None, {input_name: input_tensor})
+        depth = outputs[0].squeeze(0)
+        depth = np.argmax(depth, axis=1)
+        depth = (depth - np.min(depth)) / (np.max(depth) - np.min(depth))
+        depth = (depth * 255).astype(np.uint8)
 
-    return outputs[0]
+        return depth
 
 def main():
     model = './model.onnx'
-    sess = rt.InferenceSession(model)  # Load the model once outside the loop
+    estimator = DepthEstimation(model)
 
     # Gstreamer Pipeline on Webcam
     cap = cv2.VideoCapture("v4l2src device=/dev/video0 ! video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! videoconvert ! video/x-raw,format=BGR ! appsink")
@@ -33,11 +37,15 @@ def main():
     while cap.isOpened():
         ret, frame = cap.read()
 
-        input_tensor = preprocess(frame)
+        depth_map = estimator.predict(frame)
 
-        depth = infer_depth(sess, input_tensor)
+        print(np.min(depth_map), np.max(depth_map), np.mean(depth_map))
 
-        cv2.imshow('frame', depth)
+        depth_color = cv2.applyColorMap(depth_map, cv2.COLORMAP_PLASMA)
+
+        cv2.imshow('frame', depth_color)
+
+        # cv2.imshow ('frame', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
