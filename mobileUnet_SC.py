@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import onnxruntime as rt
 
-class MobileUnet():
+class MobileUnet_SC():
   def __init__(self, model_path):
     self.model = self.initialize_model(model_path)
     self.min_depth = np.inf
