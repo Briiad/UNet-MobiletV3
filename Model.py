@@ -7,6 +7,7 @@ class Model(nn.Module):
         self.model = smp.UnetPlusPlus(
             # MobileNetV3 Small with pretrained weights
             encoder_name="timm-mobilenetv3_large_100",
+            encoder_weights="imagenet",
             in_channels=3,
             classes=1,
             activation="sigmoid"
