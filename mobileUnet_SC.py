@@ -54,7 +54,7 @@ class MobileUnet_SC():
 
     # print(self.min_depth, self.max_depth)
     norm_depth = 255 * (self.depth_map - self.min_depth) / (self.max_depth - self.min_depth)
-    # norm_depth = 255 - norm_depth
+    norm_depth = 255 - norm_depth
 
     color_depth = cv2.applyColorMap(norm_depth.astype(np.uint8), cv2.COLORMAP_INFERNO)
 
