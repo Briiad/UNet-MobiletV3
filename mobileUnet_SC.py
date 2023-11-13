@@ -38,9 +38,9 @@ class MobileUnet_SC():
     return img_input[np.newaxis, :, :, :].astype(np.float32)
   
   def inference(self, input_tensor):
-    start = time.time()
+    # start = time.time()
     outputs = self.sess.run(self.output_names, {self.input_names[0]: input_tensor})[0]
-    print(time.time(), start)
+    # print(time.time(), start)
     return outputs
   
   def process_output(self, outputs):

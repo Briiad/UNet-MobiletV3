@@ -14,6 +14,8 @@ WIDTH = 256
 HEIGHT = 192
 frame_time = 0
 prev_frame_time = 0
+min_depth = 0
+max_depth = 255
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -33,7 +35,7 @@ while cap.isOpened():
 
     # Get Depth Value from Bounding Box
     depth_roi = depth_map[x_min:x_max, y_min:y_max]
-    depth = 10**np.median(depth_roi)
+    depth = 10**np.mean(depth_roi)
 
     # Get FPS
     frame_time = time.time()
