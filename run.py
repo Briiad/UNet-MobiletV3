@@ -32,8 +32,6 @@ while cap.isOpened():
     depth_roi = depth_map[y_min:y_max, x_min:x_max]
     depth = np.median(depth_roi)
 
-    depth = depth * 10.0
-
     # Get FPS
     fps = cap.get(cv2.CAP_PROP_FPS)
 
