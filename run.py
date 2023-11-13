@@ -41,8 +41,7 @@ while cap.isOpened():
     prev_frame_time = frame_time
 
     # Display FPS and Depth Value
-    fps = int(fps)
-    fps = str(fps)
+    fps = float(fps)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(rectangle, "FPS: {:.2f}".format(fps), (10, 20), font, 0.5, (0, 255, 0), 2)
