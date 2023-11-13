@@ -35,7 +35,9 @@ while cap.isOpened():
 
     # Get Depth Value from Bounding Box
     depth_roi = depth_map[x_min:x_max, y_min:y_max]
-    depth = 10**np.mean(depth_roi)
+    
+    # Depth Range will be 0 ~ 255 or 0.5m ~ 5m
+    depth = np.mean(depth_roi) * 10
 
     # Get FPS
     frame_time = time.time()
