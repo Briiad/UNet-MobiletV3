@@ -9,9 +9,12 @@ cv2.namedWindow("Depth", cv2.WINDOW_NORMAL)
 
 model_path = './model.onnx'
 depth_estimator = MobileUnet_SC(model_path)
+WIDTH = 256
+HEIGHT = 192
 
 while cap.isOpened():
     ret, frame = cap.read()
+    frame = cv2.resize(frame, (WIDTH, HEIGHT), interpolation=cv2.INTER_AREA)
 
     if not ret:
         break
@@ -20,17 +23,22 @@ while cap.isOpened():
     depth_map = depth_estimator(frame)
     color_depth = depth_estimator.draw_depth()
 
-    # Square Bounding Box To measure distance, located at the center of the image
-    cv2.rectangle(color_depth, (int(frame.shape[1]/2-50), int(frame.shape[0]/2-50)), (int(frame.shape[1]/2+50), int(frame.shape[0]/2+50)), (0, 255, 0), 2)
+    # Square Bounding Box 
+    x_min, y_min = int(WIDTH/4), int(HEIGHT/4)
+    x_max, y_max = WIDTH - x_min, HEIGHT
 
-    # Estimate distance
-    distance = depth_map[int(frame.shape[0]/2), int(frame.shape[1]/2)]
+    rectangle = cv2.rectangle(color_depth, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
 
-    # Display Distance
-    cv2.putText(color_depth, "Distance: {:.2f} cm".format(distance), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    # Get Median Depth Value from Bounding Box
+    depth_roi = depth_map[y_min:y_max, x_min:x_max]
+    median_depth = np.median(depth_roi)
 
-    # Display Depth
-    cv2.imshow("Depth", color_depth)
+    # FPS and Depth Value as Meters
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    cv2.putText(rectangle, f"FPS: {fps:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    cv2.putText(rectangle, f"Depth: {median_depth:.2f} m", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+    cv2.imshow("Depth", np.concatenate((frame, rectangle), axis=1))
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
