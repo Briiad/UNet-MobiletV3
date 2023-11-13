@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 
 from mobileUnet_SC import MobileUnet_SC
 
@@ -11,6 +12,8 @@ model_path = './model.onnx'
 depth_estimator = MobileUnet_SC(model_path)
 WIDTH = 256
 HEIGHT = 192
+frame_time = 0
+prev_frame_time = 0
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -29,13 +32,18 @@ while cap.isOpened():
     rectangle = cv2.rectangle(color_depth, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
 
     # Get Depth Value from Bounding Box
-    depth_roi = depth_map[y_min:y_max, x_min:x_max]
-    depth = np.median(depth_roi)
+    depth_roi = depth_map[x_min:x_max, y_min:y_max]
+    depth = 10**np.median(depth_roi)
 
     # Get FPS
-    fps = cap.get(cv2.CAP_PROP_FPS)
+    frame_time = time.time()
+    fps = 1 / (frame_time - prev_frame_time)
+    prev_frame_time = frame_time
 
-    # Font size is 8
+    # Display FPS and Depth Value
+    fps = int(fps)
+    fps = str(fps)
+
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(rectangle, "FPS: {:.2f}".format(fps), (10, 20), font, 0.5, (0, 255, 0), 2)
     cv2.putText(rectangle, "Depth: {:.2f} m".format(depth), (10, 40), font, 0.5, (0, 255, 0), 2)
