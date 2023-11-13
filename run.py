@@ -24,18 +24,21 @@ while cap.isOpened():
 
     # Square Bounding Box 
     x_min, y_min = int(WIDTH/4), int(HEIGHT/4)
-    x_max, y_max = WIDTH - x_min, HEIGHT
+    x_max, y_max = WIDTH - x_min, HEIGHT - y_min
 
     rectangle = cv2.rectangle(color_depth, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
 
-    # Get Median Depth Value from Bounding Box
+    # Get Depth Value from Bounding Box
     depth_roi = depth_map[y_min:y_max, x_min:x_max]
-    median_depth = np.median(depth_roi)
+    depth = np.mean(depth_roi)
 
     # FPS and Depth Value as Meters
     fps = cap.get(cv2.CAP_PROP_FPS)
-    cv2.putText(rectangle, f"FPS: {fps:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    cv2.putText(rectangle, f"Depth: {median_depth:.2f} m", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+    # Font size is 8
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    cv2.putText(rectangle, "FPS: {:.2f}".format(fps), (10, 20), font, 0.5, (0, 255, 0), 2)
+    cv2.putText(rectangle, "Depth: {:.2f} m".format(depth), (10, 40), font, 0.5, (0, 255, 0), 2)
 
     cv2.imshow("Depth", rectangle)
 
