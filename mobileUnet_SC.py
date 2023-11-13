@@ -30,7 +30,7 @@ class MobileUnet_SC():
     mean=[0.485, 0.485, 0.485]
     std=[0.229, 0.229, 0.229]
 
-    # img_input = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_input = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img_input = cv2.resize(img_input, (self.input_width, self.input_height), interpolation=cv2.INTER_AREA) /255.0
     img_input = (img_input - mean) / std
     img_input = img_input.transpose(2, 0, 1)
