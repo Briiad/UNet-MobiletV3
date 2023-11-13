@@ -30,9 +30,9 @@ while cap.isOpened():
 
     # Get Depth Value from Bounding Box
     depth_roi = depth_map[y_min:y_max, x_min:x_max]
-    depth = np.mean(depth_roi)
+    depth = np.median(depth_roi)
 
-    depth = depth * 100.0
+    depth = depth * 10.0
 
     # Get FPS
     fps = cap.get(cv2.CAP_PROP_FPS)
