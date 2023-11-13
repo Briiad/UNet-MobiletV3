@@ -14,7 +14,6 @@ HEIGHT = 192
 
 while cap.isOpened():
     ret, frame = cap.read()
-    frame = cv2.resize(frame, (WIDTH, HEIGHT), interpolation=cv2.INTER_AREA)
 
     if not ret:
         break
@@ -38,7 +37,7 @@ while cap.isOpened():
     cv2.putText(rectangle, f"FPS: {fps:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     cv2.putText(rectangle, f"Depth: {median_depth:.2f} m", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-    cv2.imshow("Depth", np.concatenate((frame, rectangle), axis=1))
+    cv2.imshow("Depth", rectangle)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
