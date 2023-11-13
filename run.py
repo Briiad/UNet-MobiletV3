@@ -32,13 +32,15 @@ while cap.isOpened():
     depth_roi = depth_map[y_min:y_max, x_min:x_max]
     depth = np.mean(depth_roi)
 
-    # FPS and Depth Value as Meters
+    depth = depth / 100.0
+
+    # Get FPS
     fps = cap.get(cv2.CAP_PROP_FPS)
 
     # Font size is 8
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(rectangle, "FPS: {:.2f}".format(fps), (10, 20), font, 0.5, (0, 255, 0), 2)
-    cv2.putText(rectangle, "Depth: {:.2f} m".format(depth), (10, 40), font, 0.5, (0, 255, 0), 2)
+    cv2.putText(rectangle, "FPS: {:.2f}".format(fps), (10, 20), font, 0.3, (0, 255, 0), 2)
+    cv2.putText(rectangle, "Depth: {:.2f} m".format(depth), (10, 40), font, 0.3, (0, 255, 0), 2)
 
     cv2.imshow("Depth", rectangle)
 
