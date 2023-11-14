@@ -18,8 +18,8 @@ void setup() {
 int pmw_speed[4] = {0, 0, 0, 0};
 int max_left = 70 * 0.95;
 int max_right = 70;
-int state = 1;
-int last_state = 1;
+int state = 0;
+int last_state = 0;
 int spam_counter = 0;
 
 void forward(){
