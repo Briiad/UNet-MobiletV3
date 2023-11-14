@@ -11,7 +11,7 @@ void setup() {
   pinMode(PWM_2, OUTPUT);
   pinMode(PWM_3, OUTPUT);
   Serial.begin(115200);
-  Serial.timeout(0.1);
+  Serial.setTimeout(0.1);
 }
 
 // GLOBAL VARIABLES
