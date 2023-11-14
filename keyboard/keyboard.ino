@@ -87,6 +87,10 @@ void loop(){
         right();
         state = 3;
         break;
+      case 'x':
+        reverse();
+        state = 4;
+        break;
       default:
         break;
     }
