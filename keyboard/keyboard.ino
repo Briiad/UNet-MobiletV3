@@ -59,10 +59,12 @@ void left(){
 }
 
 void reverse(){
-  pmw_speed[0] -= 40;
-  pmw_speed[2] -= 40;
-  pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
-  pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
+  pmw_speed[0] = 0;
+  pmw_speed[2] = 0;
+  pmw_speed[1] += 40;
+  pmw_speed[3] += 40;
+  pmw_speed[1] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
+  pmw_speed[3] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
   return;
 }
 
