@@ -60,22 +60,23 @@ void right(){
 
 void loop(){
   if (Serial.available() > 0){
-    String input = Serial.readString();
-    if (input == "w"){
-      forward();
-      state = 1;
-    }
-    else if (input == "s"){
-      stop();
-      state = 0;
-    }
-    else if (input == "a"){
-      left();
-      state = 2;
-    }
-    else if (input == "d"){
-      right();
-      state = 3;
+    char input = Serial.read();
+
+    switch(input){
+      case 'w':
+        forward();
+        break;
+      case 's':
+        stop();
+        break;
+      case 'a':
+        left();
+        break;
+      case 'd':
+        right();
+        break;
+      default:
+        break;
     }
   }
 }
