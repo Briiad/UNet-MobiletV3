@@ -72,8 +72,8 @@ void loop(){
 
   // State Read
   switch(state){
-    case 0: forward(); break;
-    case 1: stop(); break;
+    case 0: stop(); break;
+    case 1: forward(); break;
     case 2: left(); break;
     case 3: right(); break;
     default: break;

@@ -18,6 +18,7 @@ frame_time = 0
 prev_frame_time = 0
 min_depth = 0
 max_depth = 255
+state = 1 # 0: Stop, 1: Move
 
 # Arduino Serial Communication
 arduino = serial.Serial('/dev/ttyACM0', 9600)
@@ -25,9 +26,18 @@ arduino = serial.Serial('/dev/ttyACM0', 9600)
 # Function for Arduino Movement
 def movement(distance):
     if distance < 0.5:
-        arduino.write(b'1')
+        state = 0
     elif distance > 1.5:
-        arduino.write(b'0')
+        state = 1
+    
+    send_state(state)
+
+# Send State to Arduino
+def send_state(state):
+    arduino.write(state.encode())
+    time.sleep(0.1)
+    data = arduino.read(1)
+    print(data.decode('ascii'))
 
 while cap.isOpened():
     ret, frame = cap.read()
