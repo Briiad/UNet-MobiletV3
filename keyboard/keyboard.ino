@@ -30,6 +30,14 @@ void forward(){
   return;
 }
 
+void backward(){
+  pmw_speed[0] -= 50;
+  pmw_speed[2] -= 50;
+  pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
+  pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
+  return;
+}
+
 void stop(){
   pmw_speed[0] = 0;
   pmw_speed[1] = 0;
@@ -58,16 +66,6 @@ void left(){
   return;
 }
 
-void reverse(){
-  pmw_speed[0] = 0;
-  pmw_speed[2] = 0;
-  pmw_speed[1] += 40;
-  pmw_speed[3] += 40;
-  pmw_speed[1] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
-  pmw_speed[3] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
-  return;
-}
-
 void loop(){
   if (Serial.available() > 0){
     char input = Serial.read();
@@ -89,8 +87,8 @@ void loop(){
         right();
         state = 3;
         break;
-      case 'x':
-        reverse();
+      case 'q':
+        backward();
         state = 4;
         break;
       default:
