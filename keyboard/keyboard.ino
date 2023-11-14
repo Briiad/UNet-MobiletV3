@@ -30,12 +30,12 @@ void forward(){
   return;
 }
 
+// Backward, Im using IBT H-Bridge
 void backward(){
-  pmw_speed[0] -= 50;
-  pmw_speed[2] -= 50;
-  pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
-  pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
-  return;
+  pmw_speed[1] += 40;
+  pmw_speed[3] += 40;
+  pmw_speed[1] = pmw_speed[1] > max_left ? max_left : pmw_speed[1];
+  pmw_speed[3] = pmw_speed[3] > max_right ? max_right : pmw_speed[3];
 }
 
 void stop(){
