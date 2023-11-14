@@ -58,6 +58,14 @@ void left(){
   return;
 }
 
+void reverse(){
+  pmw_speed[0] -= 40;
+  pmw_speed[2] -= 40;
+  pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
+  pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
+  return;
+}
+
 void loop(){
   if (Serial.available() > 0){
     char input = Serial.read();
