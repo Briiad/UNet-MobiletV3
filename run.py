@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import time
+import serial 
 
 from mobileUnet_SC import MobileUnet_SC
 
@@ -8,6 +9,7 @@ cap = cv2.VideoCapture("v4l2src device=/dev/video0 ! video/x-raw,format=YUY2,wid
 
 cv2.namedWindow("Depth", cv2.WINDOW_NORMAL)
 
+# Global Variables
 model_path = './model.onnx'
 depth_estimator = MobileUnet_SC(model_path)
 WIDTH = 256
@@ -16,6 +18,16 @@ frame_time = 0
 prev_frame_time = 0
 min_depth = 0
 max_depth = 255
+
+# Arduino Serial Communication
+arduino = serial.Serial('/dev/ttyACM0', 9600)
+
+# Function for Arduino Movement
+def movement(distance):
+    if distance < 0.5:
+        arduino.write(b'1')
+    elif distance > 1.5:
+        arduino.write(b'0')
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -38,6 +50,9 @@ while cap.isOpened():
     
     # Depth Range will be 0 ~ 255 or 0.5m ~ 5m
     depth = (np.mean(depth_roi) * 10) - 0.75
+
+    # Send Depth Value to Arduino
+    movement(depth)
 
     # Get FPS
     frame_time = time.time()

@@ -1,7 +1,4 @@
-#include <SoftwareSerial.h>
 #include <Arduino.h>
-
-SoftwareSerial BTserial(2, 3);
 
 #define PWM_0 5
 #define PWM_1 6
@@ -13,9 +10,7 @@ void setup() {
   pinMode(PWM_1, OUTPUT);
   pinMode(PWM_2, OUTPUT);
   pinMode(PWM_3, OUTPUT);
-  BTserial.begin(9600);
-  Serial.begin(9600);
-  BTserial.timeout(0.1);
+  Serial.begin(115200);
   Serial.timeout(0.1);
 }
 
@@ -63,35 +58,24 @@ void right(){
   return;
 }
 
-// Keyboard Movement
 void loop(){
-  // Arrow Key Movement Input via Serial Monitor
   if (Serial.available() > 0){
-    state = Serial.readString().toInt();
+    String input = Serial.readString();
+    if (input == "w"){
+      forward();
+      state = 1;
+    }
+    else if (input == "s"){
+      stop();
+      state = 0;
+    }
+    else if (input == "a"){
+      left();
+      state = 2;
+    }
+    else if (input == "d"){
+      right();
+      state = 3;
+    }
   }
-
-  // State Read
-  switch(state){
-    case 0: forward(); break;
-    case 1: stop(); break;
-    case 2: left(); break;
-    case 3: right(); break;
-    default: break;
-  }
-
-  // PWM Write
-  if (state != last_state){
-    spam_counter = 0;
-  }
-
-  if (spam_counter < 10){
-    analogWrite(PWM_0, pmw_speed[0]);
-    analogWrite(PWM_1, pmw_speed[1]);
-    analogWrite(PWM_2, pmw_speed[2]);
-    analogWrite(PWM_3, pmw_speed[3]);
-    spam_counter++;
-  }
-
-  last_state = state;
-  delay(10);
 }
