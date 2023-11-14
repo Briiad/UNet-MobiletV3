@@ -16,25 +16,25 @@ void setup() {
 
 // GLOBAL VARIABLES
 int pmw_speed[4] = {0, 0, 0, 0};
-int max_left = 70 * 0.95;
+int max_left = 70 * 0.90;
 int max_right = 70;
 int state = 0;
 int last_state = 0;
 int spam_counter = 0;
 
 void forward(){
-  pmw_speed[0] += 10;
-  pmw_speed[2] += 10;
+  pmw_speed[0] += 40;
+  pmw_speed[2] += 40;
   pmw_speed[0] = pmw_speed[0] > max_left ? max_left : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] > max_right ? max_right : pmw_speed[2];
   return;
 }
 
 void stop(){
-  pmw_speed[0] -=10;
-  pmw_speed[1] -=10;
-  pmw_speed[2] -=10;
-  pmw_speed[3] -=10;
+  pmw_speed[0] -=40;
+  pmw_speed[1] -=40;
+  pmw_speed[2] -=40;
+  pmw_speed[3] -=40;
   pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
   pmw_speed[1] = pmw_speed[1] < 0 ? 0 : pmw_speed[1];
   pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
@@ -43,16 +43,16 @@ void stop(){
 }
 
 void left(){
-  pmw_speed[0] -= 10;
-  pmw_speed[2] += 10;
+  pmw_speed[0] -= 40;
+  pmw_speed[2] += 40;
   pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] > max_right ? max_right : pmw_speed[2];
   return;
 }
 
 void right(){
-  pmw_speed[0] += 10;
-  pmw_speed[2] -= 10;
+  pmw_speed[0] += 40;
+  pmw_speed[2] -= 40;
   pmw_speed[0] = pmw_speed[0] > max_left ? max_left : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
   return;
