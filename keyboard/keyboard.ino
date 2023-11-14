@@ -42,17 +42,17 @@ void stop(){
   return;
 }
 
-void left(){
-  pmw_speed[0] += 40;
-  pmw_speed[2] -= 40;
+void right(){
+  pmw_speed[0] -= 40;
+  pmw_speed[2] += 40;
   pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] > max_right ? max_right : pmw_speed[2];
   return;
 }
 
-void right(){
-  pmw_speed[0] -= 40;
-  pmw_speed[2] += 40;
+void left(){
+  pmw_speed[0] += 40;
+  pmw_speed[2] -= 40;
   pmw_speed[0] = pmw_speed[0] > max_left ? max_left : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
   return;
