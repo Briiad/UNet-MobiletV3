@@ -1,4 +1,3 @@
-#include <SoftwareSerial.h>
 #include <Arduino.h>
 
 SoftwareSerial BTserial(2, 3);
@@ -13,16 +12,14 @@ void setup() {
   pinMode(PWM_1, OUTPUT);
   pinMode(PWM_2, OUTPUT);
   pinMode(PWM_3, OUTPUT);
-  BTserial.begin(9600);
   Serial.begin(9600);
-  BTserial.timeout(0.1);
   Serial.timeout(0.1);
 }
 
 // GLOBAL VARIABLES
 int pmw_speed[4] = {0, 0, 0, 0};
-int max_left = 70 * 0.95;
-int max_right = 70;
+int max_left = 80;
+int max_right = 80 * 0.92;
 int state = 0;
 int last_state = 0;
 int spam_counter = 0;
@@ -33,6 +30,11 @@ void forward(){
   pmw_speed[0] = pmw_speed[0] > max_left ? max_left : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] > max_right ? max_right : pmw_speed[2];
   return;
+}
+
+void backward(){
+  pmw_speed[1] = 40;
+  pmw_speed[3] = 40;
 }
 
 void stop(){

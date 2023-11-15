@@ -21,7 +21,7 @@ max_depth = 255
 state = 1 # 0: Stop, 1: Move
 
 # Arduino Serial Communication
-arduino = serial.Serial('/dev/ttyACM0', 9600)
+arduino = serial.Serial('/dev/ttyUSB0', 115200)
 
 # Function for Arduino Movement
 def movement(distance):
@@ -34,10 +34,15 @@ def movement(distance):
 
 # Send State to Arduino
 def send_state(state):
-    arduino.write(state.encode())
-    time.sleep(0.1)
-    data = arduino.read(1)
-    print(data.decode('ascii'))
+    try:
+        while True:
+            arduino.write(state.encode())
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        print('Close Serial Connection')
+        arduino.write('0'.encode())
+    finally:
+        arduino.close()
 
 while cap.isOpened():
     ret, frame = cap.read()
