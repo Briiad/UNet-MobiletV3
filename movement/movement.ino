@@ -23,8 +23,8 @@ void setup() {
 int pmw_speed[4] = {0, 0, 0, 0};
 int max_left = 70 * 0.95;
 int max_right = 70;
-int state = 1;
-int last_state = 1;
+int state = 0;
+int last_state = 0;
 int spam_counter = 0;
 
 void forward(){
@@ -47,25 +47,23 @@ void stop(){
   return;
 }
 
-void left(){
-  pmw_speed[0] -= 10;
-  pmw_speed[2] += 10;
+void right(){
+  pmw_speed[0] -= 40;
+  pmw_speed[2] += 40;
   pmw_speed[0] = pmw_speed[0] < 0 ? 0 : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] > max_right ? max_right : pmw_speed[2];
   return;
 }
 
-void right(){
-  pmw_speed[0] += 10;
-  pmw_speed[2] -= 10;
+void left(){
+  pmw_speed[0] += 40;
+  pmw_speed[2] -= 40;
   pmw_speed[0] = pmw_speed[0] > max_left ? max_left : pmw_speed[0];
   pmw_speed[2] = pmw_speed[2] < 0 ? 0 : pmw_speed[2];
   return;
 }
 
-// Keyboard Movement
 void loop(){
-  // Arrow Key Movement Input via Serial Monitor
   if (Serial.available() > 0){
     state = Serial.readString().toInt();
   }
