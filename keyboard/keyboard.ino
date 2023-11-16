@@ -89,5 +89,4 @@ void loop(){
   analogWrite(PWM_2, pmw_speed[2]);
   analogWrite(PWM_3, pmw_speed[3]);
 
-  Serial.println(String(speed[0]) + "+" + String(speed[1]) + "+" + String(speed[2]) + "+" + String(speed[3]));
 }

@@ -18,31 +18,31 @@ frame_time = 0
 prev_frame_time = 0
 min_depth = 0
 max_depth = 255
-state = 1 # 0: Stop, 1: Move
+state = 0 # 0: Stop, 1: Move
 
 # Arduino Serial Communication
-arduino = serial.Serial('/dev/ttyUSB0', 9600)
+arduino = serial.Serial(
+    port = '/dev/ttyUSB0',
+    baudrate = 9600,
+    timeout = 1,
+    bytesize=serial.EIGHTBITS,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    xonxoff=False,
+    rtscts=False,
+    dsrdtr=False, 
+)
 
 # Function for Arduino Movement
 def movement(distance):
-    if distance < 0.5:
+    if distance < 1.2:
         state = 0
-    elif distance > 0.5:
+    elif distance > 1.2:
         state = 1
     
-    send_state(str(state))
+    return str(state)
 
-# Send State to Arduino
-def send_state(state):
-    try:
-      arduino.write(state.encode())
-    except KeyboardInterrupt:
-        print('Close Serial Connection')
-        arduino.write('0'.encode())
-    finally:
-        arduino.close()
-
-while cap.isOpened():
+while True:
     ret, frame = cap.read()
 
     if not ret:
@@ -62,11 +62,7 @@ while cap.isOpened():
     depth_roi = depth_map[x_min:x_max, y_min:y_max]
     
     # Depth Range will be 0 ~ 255 or 0.5m ~ 5m
-    depth = (np.mean(depth_roi) * 10) - 0.75
-
-    # Send Depth Value to Arduino
-    movement(depth)
-
+    depth = (10**np.mean(depth_roi)) - 0.7
     # Get FPS
     frame_time = time.time()
     fps = 1 / (frame_time - prev_frame_time)
@@ -82,7 +78,12 @@ while cap.isOpened():
     cv2.imshow("Depth", rectangle)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        arduino.write('0'.encode())
         break
+    
+    # Send Data to Arduino
+    arduino.write(movement(depth).encode())
     
 cap.release()
 cv2.destroyAllWindows()
+arduino.close()
