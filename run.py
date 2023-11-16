@@ -35,9 +35,8 @@ def movement(distance):
 # Send State to Arduino
 def send_state(state):
     try:
-        while True:
-            arduino.write(state.encode())
-            time.sleep(0.1)
+      arduino.write(state.encode())
+      time.sleep(0.1)
     except KeyboardInterrupt:
         print('Close Serial Connection')
         arduino.write('0'.encode())
