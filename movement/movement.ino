@@ -1,7 +1,5 @@
 #include <Arduino.h>
 
-SoftwareSerial BTserial(2, 3);
-
 #define PWM_0 5
 #define PWM_1 6
 #define PWM_2 9
@@ -13,7 +11,7 @@ void setup() {
   pinMode(PWM_2, OUTPUT);
   pinMode(PWM_3, OUTPUT);
   Serial.begin(9600);
-  Serial.timeout(0.1);
+  Serial.setTimeout(0.1);
 }
 
 // GLOBAL VARIABLES

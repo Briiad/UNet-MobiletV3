@@ -21,16 +21,16 @@ max_depth = 255
 state = 1 # 0: Stop, 1: Move
 
 # Arduino Serial Communication
-arduino = serial.Serial('/dev/ttyUSB0', 115200)
+arduino = serial.Serial('/dev/ttyUSB0', 9600)
 
 # Function for Arduino Movement
 def movement(distance):
     if distance < 0.5:
         state = 0
-    elif distance > 1.5:
+    elif distance > 0.5:
         state = 1
     
-    send_state(state)
+    send_state(str(state))
 
 # Send State to Arduino
 def send_state(state):
