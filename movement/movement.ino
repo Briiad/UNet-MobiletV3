@@ -66,30 +66,30 @@ void left(){
 void loop(){
   if (Serial.available() > 0){
     state = Serial.readString().toInt();
-  }
 
-  // State Read
-  switch(state){
-    case 0: stop(); break;
-    case 1: forward(); break;
-    case 2: left(); break;
-    case 3: right(); break;
-    default: break;
-  }
+    // State Read
+    switch(state){
+      case 0: stop(); break;
+      case 1: forward(); break;
+      case 2: left(); break;
+      case 3: right(); break;
+      default: break;
+    }
 
-  // PWM Write
-  if (state != last_state){
-    spam_counter = 0;
-  }
+    // PWM Write
+    if (state != last_state){
+      spam_counter = 0;
+    }
 
-  if (spam_counter < 10){
-    analogWrite(PWM_0, pmw_speed[0]);
-    analogWrite(PWM_1, pmw_speed[1]);
-    analogWrite(PWM_2, pmw_speed[2]);
-    analogWrite(PWM_3, pmw_speed[3]);
-    spam_counter++;
-  }
+    if (spam_counter < 10){
+      analogWrite(PWM_0, pmw_speed[0]);
+      analogWrite(PWM_1, pmw_speed[1]);
+      analogWrite(PWM_2, pmw_speed[2]);
+      analogWrite(PWM_3, pmw_speed[3]);
+      spam_counter++;
+    }
 
-  last_state = state;
-  delay(10);
+    last_state = state;
+    delay(10);
+  }
 }
