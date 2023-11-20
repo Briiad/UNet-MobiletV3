@@ -60,8 +60,8 @@ while True:
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
     
-    # Get Average Depth Value
-    depth_center = np.mean(depth_roi_center) * 10
+    # Find the Highest Depth Value
+    depth_center = np.amax(depth_roi_center)
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
