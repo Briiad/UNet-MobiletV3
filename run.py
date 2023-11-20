@@ -49,29 +49,22 @@ while True:
     
     # Depth Estimation
     depth_map = depth_estimator(frame)
-    depth_map_left = depth_estimator(frame)
-    depth_map_right = depth_estimator(frame)
     color_depth = depth_estimator.draw_depth()
 
-    # Bounding Box Center
-    x_min, y_min = int(WIDTH / 4), int(HEIGHT / 4)
-    x_max, y_max = WIDTH - x_min, HEIGHT - y_min
-    # Bounding Box Left
-    x_min_left, y_min_left = 0, int(HEIGHT / 4)
-    x_max_left, y_max_left = int(WIDTH / 4), HEIGHT - y_min_left
-    # Bounding Box Right
-    x_min_right, y_min_right = WIDTH - x_min_left, y_min_left
-    x_max_right, y_max_right = WIDTH, y_max_left
+    # Center Crop Rectangle
+    center = color_depth.copy()
+    center = center[:192, 85:170]
+    depth_roi_center = depth_map[:192, 85:170]
 
-    # Draw Rectangle
-    rectangle = cv2.rectangle(color_depth, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2) # Center
-    rectangle = cv2.rectangle(color_depth, (x_min_left, y_min_left), (x_max_left, y_max_left), (0, 255, 0), 2) # Left
-    rectangle = cv2.rectangle(color_depth, (x_min_right, y_min_right), (x_max_right, y_max_right), (0, 255, 0), 2) # Right
+    # Left Crop Rectangle
+    left = color_depth.copy()
+    left = left[:192, :85]
+    depth_roi_left = depth_map[:192, :85]
 
-    # Get Depth Value from Bounding Box
-    depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
-    depth_roi_left = depth_map_left[x_min_left:x_max_left, y_min_left:y_max_left]
-    depth_roi_right = depth_map_right[x_min_right:x_max_right, y_min_right:y_max_right]
+    # Right Crop Rectangle
+    right = color_depth.copy()
+    right = right[:192, 170:]
+    depth_roi_right = depth_map[:192, 170:]
 
     # Calculate Average Depth Value
     depth_center = np.median(depth_roi_center)
@@ -80,18 +73,20 @@ while True:
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(rectangle, "Center: {:.2f} m".format(depth_center), (10, 40), font, 0.5, (0, 255, 0), 2)
-    cv2.putText(rectangle, "Left: {:.2f} m".format(depth_left), (10, 60), font, 0.5, (0, 255, 0), 2)
-    cv2.putText(rectangle, "Right: {:.2f} m".format(depth_right), (10, 80), font, 0.5, (0, 255, 0), 2)
+    cv2.putText(center, "Center: {:.2f} m".format(depth_center), (10, 10), font, 0.35, (0, 255, 0), 2)
+    cv2.putText(left, "Left: {:.2f} m".format(depth_left), (10, 10), font, 0.35, (0, 255, 0), 2)
+    cv2.putText(right, "Right: {:.2f} m".format(depth_right), (10, 10), font, 0.35, (0, 255, 0), 2)
 
-    cv2.imshow("Depth", rectangle)
+    # Concatenate
+    depth = np.concatenate((left, center, right), axis=1)
+    cv2.imshow("Depth", depth)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        arduino.write('0'.encode())
+        # arduino.write('0'.encode())
         break
     
     # Send Data to Arduino
-    arduino.write(movement(depth_center).encode())
+    # arduino.write(movement(depth_center).encode())
     
 cap.release()
 cv2.destroyAllWindows()
