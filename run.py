@@ -41,10 +41,6 @@ def movement(distance):
     
     return str(state)
 
-# Depth to Meters, Depth Value only range 0 ~ 1
-def depth_to_meters(min_depth, max_depth, normalized_depth):
-    return float(min_depth + normalized_depth * (max_depth - min_depth))
-
 while True:
     ret, frame = cap.read()
 
@@ -63,15 +59,8 @@ while True:
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
 
-    # Max and Min Depth Value
-    min_depth = np.min(depth_roi_center)
-    max_depth = np.max(depth_roi_center)
-
-    # Normalize Depth Value
-    normalized_depth = (depth_roi_center - min_depth) / (max_depth - min_depth)
-
-    # Depth to Meters
-    depth_center = depth_to_meters(min_depth, max_depth, normalized_depth)
+    # Calculate Average Depth Value
+    depth_center = (10**np.mean(depth_roi_center))
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
