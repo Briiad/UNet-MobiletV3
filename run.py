@@ -42,6 +42,12 @@ def movement(distance):
     
     return str(state)
 
+# Depth to Meters
+scaling_factor = 0.0010000000474974513
+
+def depth_to_meters(depth_value):
+    return (depth_value - 0.10) * scaling_factor + 0.05
+
 while True:
     ret, frame = cap.read()
 
@@ -60,12 +66,12 @@ while True:
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
 
-    # Find the Lowest Depth Value
-    depth_center = np.amin(depth_roi_center)
+    # Get Depth Value from Center of Bounding Box
+    depth_center = depth_to_meters(np.mean(depth_roi_center))
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(rectangle, "Max: {:.2f} m".format(depth_center), (10, 40), font, 0.5, (0, 255, 0), 2)
+    cv2.putText(rectangle, "Center: {:.2f} m".format(depth_center), (10, 40), font, 0.5, (0, 255, 0), 2)
 
     cv2.imshow("Depth", rectangle)
 
