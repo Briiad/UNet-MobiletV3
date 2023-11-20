@@ -61,7 +61,7 @@ while True:
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
     
     # Depth Range will be in meters
-    depth_center = (10**((depth_roi_center.mean()) / 9.0))
+    depth_center = (10**(depth_roi_center.mean()))
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
