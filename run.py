@@ -16,9 +16,8 @@ WIDTH = 256
 HEIGHT = 192
 frame_time = 0
 prev_frame_time = 0
-min_depth = 0
-max_depth = 255
 state = 0 # 0: Stop, 1: Move
+scaling_factor = 0.1
 
 # Arduino Serial Communication
 # arduino = serial.Serial(
@@ -42,11 +41,9 @@ def movement(distance):
     
     return str(state)
 
-# Depth to Meters
-scaling_factor = 0.0010000000474974513
-
-def depth_to_meters(depth_value):
-    return (depth_value - 0.10) * scaling_factor + 0.05
+# Depth to Meters, Depth Value only range 0 ~ 1
+def depth_to_meters(min_depth, max_depth, normalized_depth):
+    return min_depth + normalized_depth * (max_depth - min_depth)
 
 while True:
     ret, frame = cap.read()
@@ -66,8 +63,15 @@ while True:
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
 
-    # Get Depth Value from Center of Bounding Box
-    depth_center = depth_to_meters(np.mean(depth_roi_center))
+    # Max and Min Depth Value
+    min_depth = np.min(depth_roi_center)
+    max_depth = np.max(depth_roi_center)
+
+    # Normalize Depth Value
+    normalized_depth = (depth_roi_center - min_depth) / (max_depth - min_depth)
+
+    # Depth to Meters
+    depth_center = depth_to_meters(min_depth, max_depth, normalized_depth)
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
