@@ -60,7 +60,7 @@ while True:
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
 
     # Calculate Average Depth Value
-    depth_center = (10**np.mean(depth_roi_center))
+    depth_center = (10**np.median(depth_roi_center))
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
