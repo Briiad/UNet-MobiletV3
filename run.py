@@ -59,17 +59,13 @@ while True:
 
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
-    
-    # Find the Highest Depth Value
-    depth_center_max = np.amax(depth_roi_center)
 
     # Find the Lowest Depth Value
-    depth_center_min = np.amin(depth_roi_center)
+    depth_center = np.amin(depth_roi_center)
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(rectangle, "Max: {:.2f} m".format(depth_center_max), (10, 40), font, 0.5, (0, 255, 0), 2)
-    cv2.putText(rectangle, "Min: {:.2f} m".format(depth_center_min), (10, 60), font, 0.5, (0, 255, 0), 2)
+    cv2.putText(rectangle, "Max: {:.2f} m".format(depth_center), (10, 40), font, 0.5, (0, 255, 0), 2)
 
     cv2.imshow("Depth", rectangle)
 
