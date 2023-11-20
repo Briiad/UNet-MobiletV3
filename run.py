@@ -43,7 +43,7 @@ def movement(distance):
 
 # Depth to Meters, Depth Value only range 0 ~ 1
 def depth_to_meters(min_depth, max_depth, normalized_depth):
-    return min_depth + normalized_depth * (max_depth - min_depth)
+    return float(min_depth + normalized_depth * (max_depth - min_depth))
 
 while True:
     ret, frame = cap.read()
