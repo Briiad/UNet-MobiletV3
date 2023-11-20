@@ -59,8 +59,11 @@ while True:
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
 
-    # Calculate Average Depth Value
-    depth_center = (10**np.median(depth_roi_center))
+    # Calculate Average Depth Value, This value threshold between 0 to 1
+    depth_center = np.median(depth_roi_center)
+
+    # Convert to Meter with the min: 0.0m, max: 5.0m based on the threshold
+    depth_center = (depth_center * (5 - 0)) + 0
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
