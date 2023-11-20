@@ -57,31 +57,18 @@ while True:
     x_max, y_max = WIDTH - x_min, HEIGHT - y_min
     rectangle = cv2.rectangle(color_depth, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
 
-    # Left Bounding Box
-    lx_min, ly_min = 0, int(HEIGHT/4)
-    lx_max, ly_max = int(WIDTH/4), HEIGHT - ly_min
-    rectangle = cv2.rectangle(rectangle, (lx_min, ly_min), (lx_max, ly_max), (0, 255, 0), 2)
-
-    # Right Bounding Box
-    rx_min, ry_min = WIDTH - lx_max, ly_min
-    rx_max, ry_max = WIDTH, ly_max
-    rectangle = cv2.rectangle(rectangle, (rx_min, ry_min), (rx_max, ry_max), (0, 255, 0), 2)
-
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
-    depth_roi_left = depth_map[lx_min:lx_max, ly_min:ly_max]
-    depth_roi_right = depth_map[rx_min:rx_max, ry_min:ry_max]
     
-    # Depth Range will be 0 ~ 255 or 0.5m ~ 5m
-    depth_center = (10**np.mean(depth_roi_center)) - 0.7
-    depth_left = (10**np.mean(depth_roi_left)) - 0.7
-    depth_right = (10**np.mean(depth_roi_right)) - 0.7
+    # Depth Range will be 0 ~ 255
+    depth_center = np.mean(depth_roi_center) / 255
+
+    # Convert to Meter
+    depth_center = (depth_center * (max_depth - min_depth)) + min_depth
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(rectangle, "Center: {:.2f} m".format(depth_center), (10, 40), font, 0.5, (0, 255, 0), 2)
-    cv2.putText(rectangle, "Left: {:.2f} m".format(depth_left), (10, 80), font, 0.5, (0, 255, 0), 2)
-    cv2.putText(rectangle, "Right: {:.2f} m".format(depth_right), (10, 120), font, 0.5, (0, 255, 0), 2)
 
     cv2.imshow("Depth", rectangle)
 
