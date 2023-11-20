@@ -20,23 +20,23 @@ state = 0 # 0: Stop, 1: Move
 scaling_factor = 0.1
 
 # Arduino Serial Communication
-# arduino = serial.Serial(
-#     port = '/dev/ttyUSB0',
-#     baudrate = 9600,
-#     timeout = 1,
-#     bytesize=serial.EIGHTBITS,
-#     parity=serial.PARITY_NONE,
-#     stopbits=serial.STOPBITS_ONE,
-#     xonxoff=False,
-#     rtscts=False,
-#     dsrdtr=False, 
-# )
+arduino = serial.Serial(
+    port = '/dev/ttyUSB0',
+    baudrate = 9600,
+    timeout = 1,
+    bytesize=serial.EIGHTBITS,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    xonxoff=False,
+    rtscts=False,
+    dsrdtr=False, 
+)
 
 # Function for Arduino Movement
 def movement(distance):
-    if distance < 1.2:
+    if distance < 0.19:
         state = 0
-    elif distance > 1.2:
+    elif distance > 0.18:
         state = 1
     
     return str(state)
@@ -51,19 +51,18 @@ while True:
     depth_map = depth_estimator(frame)
     color_depth = depth_estimator.draw_depth()
 
-    # Center Bounding Box 
-    x_min, y_min = int(WIDTH/4), int(HEIGHT/4)
+    # Bounding Box Center
+    x_min, y_min = int(WIDTH / 4), int(HEIGHT / 4)
     x_max, y_max = WIDTH - x_min, HEIGHT - y_min
+
+    # Draw Rectangle
     rectangle = cv2.rectangle(color_depth, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
 
     # Get Depth Value from Bounding Box
     depth_roi_center = depth_map[x_min:x_max, y_min:y_max]
 
-    # Calculate Average Depth Value, This value threshold between 0 to 1
+    # Calculate Average Depth Value
     depth_center = np.median(depth_roi_center)
-
-    # Convert to Meter with the min: 0.0m, max: 5.0m based on the threshold
-    depth_center = (depth_center * (5 - 0)) + 0
 
     # Display Depth
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -72,12 +71,12 @@ while True:
     cv2.imshow("Depth", rectangle)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        # arduino.write('0'.encode())
+        arduino.write('0'.encode())
         break
     
     # Send Data to Arduino
-    # arduino.write(movement(depth_center).encode())
+    arduino.write(movement(depth_center).encode())
     
 cap.release()
 cv2.destroyAllWindows()
-# arduino.close()
+arduino.close()

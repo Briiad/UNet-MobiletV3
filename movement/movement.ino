@@ -17,7 +17,7 @@ void setup() {
 // GLOBAL VARIABLES
 int pmw_speed[4] = {0, 0, 0, 0};
 int max_left = 40;
-int max_right = 40 * 0.86;
+int max_right = 40 * 0.9;
 int state = 0;
 int last_state = 0;
 int spam_counter = 0;
