@@ -16,7 +16,7 @@ WIDTH = 256
 HEIGHT = 192
 frame_time = 0
 prev_frame_time = 0
-state = 0 # 0: Stop, 1: Move, 2: Turn Left, 3: Turn Right, 4: Backward
+state = 0 # 0: Stop, 1: Move, 2: Turn Right, 3: Turn Left, 4: Backward, 5: Turn Around
 
 # Arduino Serial Communication
 arduino = serial.Serial(
@@ -34,9 +34,13 @@ def movement(dist_center, dist_left, dist_right):
         elif dist_right > 0.2 and dist_left < 0.2:
             state = 3
         elif dist_left < 0.2 and dist_right < 0.2:
-            state = 4
+            state = 5
     elif dist_center > 0.2:
         state = 1
+        if dist_right < 0.2:
+            state = 2
+        elif dist_left < 0.2:
+            state = 3
     
     print(str(state))
     return str(state)

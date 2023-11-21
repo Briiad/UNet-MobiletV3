@@ -73,6 +73,18 @@ void left(){
   return;
 }
 
+// Turn Around 180
+void turn_around(){
+  pwm_speed[0] = 0;
+  pwm_speed[1] = 0;
+  pwm_speed[2] = 0;
+  pwm_speed[3] = 0;
+  delay(1000);
+  pwm_speed[0] += 40;
+  pwm_speed[3] += 40;
+  delay(1000);
+}
+
 void loop(){
   if (Serial.available() > 0){
     state = Serial.readString().toInt();
