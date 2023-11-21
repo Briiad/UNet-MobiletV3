@@ -81,11 +81,11 @@ while True:
     cv2.imshow("Depth", depth)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        # arduino.write('0'.encode())
+        arduino.write('0'.encode())
         break
     
     # Send Data to Arduino
-    # arduino.write(movement(depth_center, depth_left, depth_right).encode())
+    arduino.write(movement(depth_center, depth_left, depth_right).encode())
     
 cap.release()
 cv2.destroyAllWindows()
