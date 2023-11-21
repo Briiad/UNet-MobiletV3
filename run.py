@@ -16,29 +16,28 @@ WIDTH = 256
 HEIGHT = 192
 frame_time = 0
 prev_frame_time = 0
-state = 0 # 0: Stop, 1: Move
-scaling_factor = 0.1
+state = 0 # 0: Stop, 1: Move, 2: Turn Left, 3: Turn Right, 4: Backward
 
 # Arduino Serial Communication
 arduino = serial.Serial(
     port = '/dev/ttyUSB0',
     baudrate = 9600,
-    timeout = 1,
-    bytesize=serial.EIGHTBITS,
-    parity=serial.PARITY_NONE,
-    stopbits=serial.STOPBITS_ONE,
-    xonxoff=False,
-    rtscts=False,
-    dsrdtr=False, 
+    timeout = 1
 )
 
 # Function for Arduino Movement
-def movement(distance):
-    if distance < 0.19:
+def movement(dist_center, dist_left, dist_right):
+    if dist_center < 0.2:
         state = 0
-    elif distance > 0.18:
+        if dist_left > 0.2:
+            state = 3
+        elif dist_right > 0.2:
+            state = 2
+    elif dist_center > 0.2:
         state = 1
-    
+    if dist_center < 0.2 and dist_left < 0.2 and dist_right < 0.2:
+        state = 4
+
     return str(state)
 
 while True:
@@ -86,7 +85,7 @@ while True:
         break
     
     # Send Data to Arduino
-    # arduino.write(movement(depth_center).encode())
+    # arduino.write(movement(depth_center, depth_left, depth_right).encode())
     
 cap.release()
 cv2.destroyAllWindows()
