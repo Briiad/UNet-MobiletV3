@@ -29,9 +29,9 @@ arduino = serial.Serial(
 def movement(dist_center, dist_left, dist_right):
     if dist_center < 0.2:
         state = 0
-        if dist_left > 0.2:
+        if dist_left > 0.2 and dist_right < 0.2:
             state = 3
-        elif dist_right > 0.2:
+        elif dist_right > 0.2 and dist_left < 0.2:
             state = 2
     elif dist_center > 0.2:
         state = 1
