@@ -10,14 +10,14 @@ void setup() {
   pinMode(PWM_1, OUTPUT);
   pinMode(PWM_2, OUTPUT);
   pinMode(PWM_3, OUTPUT);
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.setTimeout(0.1);
 }
 
 // GLOBAL VARIABLES
 int pmw_speed[4] = {0, 0, 0, 0};
-int max_left = 40 * 0.86;
-int max_right = 40;
+int max_left = 150 * 0.86;
+int max_right = 150;
 int state = 0;
 int last_state = 0;
 int spam_counter = 0;

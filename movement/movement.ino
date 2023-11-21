@@ -16,8 +16,8 @@ void setup() {
 
 // GLOBAL VARIABLES
 int pwm_speed[4] = {0, 0, 0, 0};
-int max_left = 40;
-int max_right = 40 * 0.9;
+int max_left = 60;
+int max_right = 60 * 0.92;
 int state = 0;
 int last_state = 0;
 int spam_counter = 0;
@@ -82,7 +82,6 @@ void turn_around(){
   delay(1000);
   pwm_speed[0] += 40;
   pwm_speed[3] += 40;
-  delay(1000);
 }
 
 void loop(){
@@ -97,6 +96,7 @@ void loop(){
     case 2: left(); break;
     case 3: right(); break;
     case 4: backward(); break;
+    case 5: turn_around(); break;
     default: break;
   }
 

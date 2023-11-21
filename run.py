@@ -37,9 +37,9 @@ def movement(dist_center, dist_left, dist_right):
             state = 5
     elif dist_center > 0.2:
         state = 1
-        if dist_right < 0.2:
+        if dist_right < 0.17 and dist_left > 0.17:
             state = 2
-        elif dist_left < 0.2:
+        elif dist_left < 0.17 and dist_right > 0.17:
             state = 3
     
     print(str(state))
