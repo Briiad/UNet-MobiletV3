@@ -57,18 +57,18 @@ while True:
 
     # Center Crop Rectangle
     center = color_depth.copy()
-    center = center[:192, 85:170]
-    depth_roi_center = depth_map[:192, 85:170]
+    center = center[:96, 85:170]
+    depth_roi_center = depth_map[:96, 85:170]
 
     # Left Crop Rectangle
     left = color_depth.copy()
-    left = left[:192, :85]
-    depth_roi_left = depth_map[:192, :85]
+    left = left[:96, :85]
+    depth_roi_left = depth_map[:96, :85]
 
     # Right Crop Rectangle
     right = color_depth.copy()
-    right = right[:192, 170:]
-    depth_roi_right = depth_map[:192, 170:]
+    right = right[:96, 170:]
+    depth_roi_right = depth_map[:96, 170:]
 
     # Calculate Average Depth Value
     depth_center = np.median(depth_roi_center)
