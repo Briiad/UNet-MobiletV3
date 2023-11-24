@@ -27,6 +27,7 @@ arduino = serial.Serial(
 
 # Function for Arduino Movement
 def movement(dist_center, dist_left, dist_right):
+    global state
     if dist_center < 0.2:
         state = 0
         if dist_left > 0.2 and dist_right < 0.2:
@@ -47,6 +48,7 @@ def movement(dist_center, dist_left, dist_right):
 
 while True:
     ret, frame = cap.read()
+    frame_time = time.time()
 
     if not ret:
         break
@@ -57,18 +59,18 @@ while True:
 
     # Center Crop Rectangle
     center = color_depth.copy()
-    center = center[:96, 85:170]
-    depth_roi_center = depth_map[:96, 85:170]
+    center = center[96:, 85:170]
+    depth_roi_center = depth_map[96:, 85:170]
 
     # Left Crop Rectangle
     left = color_depth.copy()
-    left = left[:96, :85]
-    depth_roi_left = depth_map[:96, :85]
+    left = left[96:, :85]
+    depth_roi_left = depth_map[96:, :85]
 
     # Right Crop Rectangle
     right = color_depth.copy()
-    right = right[:96, 170:]
-    depth_roi_right = depth_map[:96, 170:]
+    right = right[96:, 170:]
+    depth_roi_right = depth_map[96:, 170:]
 
     # Calculate Average Depth Value
     depth_center = np.median(depth_roi_center)
@@ -91,7 +93,11 @@ while True:
     
     # Send Data to Arduino
     arduino.write(movement(depth_center, depth_left, depth_right).encode())
-    
+
+    # Detection Time in ms
+    detection_time = time.time() - frame_time
+    print("Detection Time: {:.2f} ms".format(detection_time * 1000))
+
 cap.release()
 cv2.destroyAllWindows()
 arduino.close()
