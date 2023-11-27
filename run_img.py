@@ -18,7 +18,7 @@ def preprocess(path, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.2
     img_np = np.array(img) / 255.0
     img_np = (img_np - mean) / std
 
-    tensor = np.transpose(img_np, (2, 0, 1))
+    # tensor = np.transpose(img_np, (2, 0, 1))
     tensor = np.expand_dims(tensor, axis=0).astype(np.float32)
 
     return tensor
