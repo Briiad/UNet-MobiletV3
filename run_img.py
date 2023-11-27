@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import argparse
 from PIL import Image
+from torchmetrics.image import StructuralSimilarityIndexMeasure as SSIM
 
 def preprocess(path, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.229, 0.229, 0.229]):
     img = Image.open(path)
@@ -24,13 +25,16 @@ def infer_depth(model_path, input_tensor):
 
     return outputs[0]
 
-def visualize(depth, img_path):
+def visualize(depth, img_path, ssim_score):
     depth = np.squeeze(depth)
     depth_normalized = (depth - np.min(depth)) / (np.max(depth) - np.min(depth))
     depth_color = cm.plasma(depth_normalized)
     
     img = Image.open(img_path)
     img = img.resize((256, 192))
+
+    # Title
+    plt.suptitle('SSIM: {:.4f}'.format(ssim_score), fontsize=16)
 
     plt.subplot(1, 2, 1)
     plt.imshow(img)
@@ -54,7 +58,10 @@ def main():
     input_tensor = preprocess(args.input_path)
     depth = infer_depth(model_path, input_tensor)
 
-    visualize(depth, args.input_path)
+    # Find SSIM
+    ssim = SSIM()
+    ssim_score = ssim(input_tensor, depth)
+    visualize(depth, args.input_path, ssim_score)
 
 if __name__ == '__main__':
     main()
