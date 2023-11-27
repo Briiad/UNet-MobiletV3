@@ -55,12 +55,13 @@ def main():
     parser.add_argument('--input_path', type=str, required=True)
     args = parser.parse_args()
 
+    gray_img = Image.open(args.input_path).convert('L')
     input_tensor = preprocess(args.input_path)
     depth = infer_depth(model_path, input_tensor)
 
     # Find SSIM
     ssim = SSIM()
-    ssim_score = ssim(input_tensor, depth)
+    ssim_score = ssim(gray_img, depth)
     visualize(depth, args.input_path, ssim_score)
 
 if __name__ == '__main__':
