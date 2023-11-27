@@ -7,7 +7,7 @@ from PIL import Image
 from torchmetrics.image import StructuralSimilarityIndexMeasure as SSIM
 
 def preprocess(path, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.229, 0.229, 0.229]):
-    img = Image.open(path)
+    img = Image.open(path).convert('L')
     img = img.resize(input_size)
 
     img_np = np.array(img) / 255.0
@@ -55,15 +55,12 @@ def main():
     parser.add_argument('--input_path', type=str, required=True)
     args = parser.parse_args()
 
-    # Convert to BW
-    input_img = preprocess(args.input_path.convert('L'))
-
     input_tensor = preprocess(args.input_path)
     depth = infer_depth(model_path, input_tensor)
 
     # Find SSIM
     ssim = SSIM(data_range=1.0)
-    ssim_score = ssim(input_img, depth)
+    ssim_score = ssim(input_tensor, depth)
     visualize(depth, args.input_path, ssim_score)
 
 if __name__ == '__main__':
