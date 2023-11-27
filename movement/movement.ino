@@ -56,8 +56,8 @@ void stop(){
 void right(){
   pwm_speed[1] = 0;
   pwm_speed[3] = 0;
-  pwm_speed[0] -= 40;
-  pwm_speed[2] += 40;
+  pwm_speed[0] -= 20;
+  pwm_speed[2] += 20;
   pwm_speed[0] = pwm_speed[0] < 0 ? 0 : pwm_speed[0];
   pwm_speed[2] = pwm_speed[2] > max_right ? max_right : pwm_speed[2];
   return;
@@ -66,8 +66,8 @@ void right(){
 void left(){
   pwm_speed[1] = 0;
   pwm_speed[3] = 0;
-  pwm_speed[0] += 40;
-  pwm_speed[2] -= 40;
+  pwm_speed[0] += 20;
+  pwm_speed[2] -= 20;
   pwm_speed[0] = pwm_speed[0] > max_left ? max_left : pwm_speed[0];
   pwm_speed[2] = pwm_speed[2] < 0 ? 0 : pwm_speed[2];
   return;
@@ -79,9 +79,10 @@ void turn_around(){
   pwm_speed[1] = 0;
   pwm_speed[2] = 0;
   pwm_speed[3] = 0;
-  delay(1000);
   pwm_speed[0] += 40;
   pwm_speed[3] += 40;
+  pwm_speed[0] = pwm_speed[0] > max_left ? max_left : pwm_speed[0];
+  pwm_speed[3] = pwm_speed[3] > max_right ? max_right : pwm_speed[3];
 }
 
 void loop(){
