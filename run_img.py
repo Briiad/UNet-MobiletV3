@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 import onnxruntime as rt
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -7,7 +8,7 @@ from PIL import Image
 from torchmetrics.image import StructuralSimilarityIndexMeasure as SSIM
 
 def preprocess(path, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.229, 0.229, 0.229]):
-    img = Image.open(path).convert('L')
+    img = Image.open(path)
     img = img.resize(input_size)
 
     img_np = np.array(img) / 255.0
@@ -58,10 +59,12 @@ def main():
     input_tensor = preprocess(args.input_path)
     depth = infer_depth(model_path, input_tensor)
 
-    # Find SSIM
-    ssim = SSIM(data_range=1.0)
-    ssim_score = ssim(input_tensor, depth)
-    visualize(depth, args.input_path, ssim_score)
+    # Find Accuracy Between Image and Depth
+    ssim = SSIM()
+    img = Image.open(args.input_path)
+    img = img.resize((256, 192))
+    img = np.array(img) / 255.0
+    ssim_score = ssim(torch.from_numpy(img), depth)
 
 if __name__ == '__main__':
     main()
