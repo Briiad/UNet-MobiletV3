@@ -18,7 +18,7 @@ def preprocess(path, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.2
     img_np = np.array(img) / 255.0
     img_np = (img_np - mean) / std
 
-    # tensor = np.transpose(img_np, (2, 0, 1))
+    tensor = np.transpose(img_np, (2, 0, 1))
     tensor = np.expand_dims(tensor, axis=0).astype(np.float32)
 
     return tensor
@@ -29,7 +29,7 @@ def infer_depth(model_path, input_tensor):
     outputs = sess.run(None, {input_name: input_tensor})
 
     # Calculate SSIM
-    ssim_score = test_metric(torch.tensor(outputs[0]), torch.tensor(input_tensor))
+    ssim_score = test_metric(outputs[0], input_tensor)
     print('SSIM: {:.4f}'.format(ssim_score))
 
     return outputs[0]
