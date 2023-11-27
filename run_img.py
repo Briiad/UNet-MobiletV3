@@ -56,8 +56,7 @@ def main():
     args = parser.parse_args()
 
     # Convert to BW
-    input_img = Image.open(args.input_path).convert('L')
-    input_img = preprocess(input_img)
+    input_img = preprocess(args.input_path.convert('L'))
 
     input_tensor = preprocess(args.input_path)
     depth = infer_depth(model_path, input_tensor)
