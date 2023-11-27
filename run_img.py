@@ -19,23 +19,27 @@ def preprocess(path, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.2
 
 def infer_depth(model_path, input_tensor):
     sess = rt.InferenceSession(model_path)
-
     input_name = sess.get_inputs()[0].name
-
     outputs = sess.run(None, {input_name: input_tensor})
 
     return outputs[0]
 
-def visualize(depth):
+def visualize(depth, img_path):
     depth = np.squeeze(depth)
-
     depth_normalized = (depth - np.min(depth)) / (np.max(depth) - np.min(depth))
-
     depth_color = cm.plasma(depth_normalized)
+    
+    img = Image.open(img_path)
+    img = img.resize((256, 192))
 
+    plt.subplot(1, 2, 1)
+    plt.imshow(img)
+    plt.title('Image')
+
+    plt.subplot(1, 2, 2)
     plt.imshow(depth_color)
-    plt.colorbar()
     plt.title('Depth')
+
     plt.show()
 
 def main():
@@ -47,10 +51,9 @@ def main():
     args = parser.parse_args()
 
     input_tensor = preprocess(args.input_path)
-
     depth = infer_depth(model_path, input_tensor)
 
-    visualize(depth)
+    visualize(depth, args.input_path)
 
 if __name__ == '__main__':
     main()
