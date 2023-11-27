@@ -6,6 +6,10 @@ import matplotlib.cm as cm
 import argparse
 from PIL import Image
 from torchmetrics.image import StructuralSimilarityIndexMeasure as SSIM
+from torchmetrics.collections import MetricCollection
+
+metrics = MetricCollection([SSIM(data_range=1.0)])
+test_metric = metrics.clone()
 
 def preprocess(path, input_size=(256, 192), mean=[0.485, 0.485, 0.485], std=[0.229, 0.229, 0.229]):
     img = Image.open(path)
@@ -23,6 +27,10 @@ def infer_depth(model_path, input_tensor):
     sess = rt.InferenceSession(model_path)
     input_name = sess.get_inputs()[0].name
     outputs = sess.run(None, {input_name: input_tensor})
+
+    # Calculate SSIM
+    ssim_score = test_metric(torch.tensor(outputs[0]), torch.tensor(input_tensor))
+    print('SSIM: {:.4f}'.format(ssim_score))
 
     return outputs[0]
 
@@ -59,14 +67,7 @@ def main():
     input_tensor = preprocess(args.input_path)
     depth = infer_depth(model_path, input_tensor)
 
-    # Find Accuracy Between Image and Depth
-    ssim = SSIM()
-    img = Image.open(args.input_path)
-    img = img.resize((256, 192))
-    img = np.array(img) / 255.0
-    ssim_score = ssim(torch.from_numpy(img), depth)
-
-    visualize(depth, args.input_path, ssim_score)
+    visualize(depth, args.input_path)
 
 if __name__ == '__main__':
     main()
