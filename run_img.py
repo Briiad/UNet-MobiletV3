@@ -66,5 +66,7 @@ def main():
     img = np.array(img) / 255.0
     ssim_score = ssim(torch.from_numpy(img), depth)
 
+    visualize(depth, args.input_path, ssim_score)
+
 if __name__ == '__main__':
     main()
