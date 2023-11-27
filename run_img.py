@@ -40,7 +40,8 @@ def visualize(depth, img_path):
     plt.imshow(depth_color)
     plt.title('Depth')
 
-    plt.show()
+    # Save the figure
+    plt.savefig('result.png')
 
 def main():
     model_path = './model.onnx'
