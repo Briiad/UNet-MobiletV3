@@ -16,8 +16,8 @@ void setup() {
 
 // GLOBAL VARIABLES
 int pwm_speed[4] = {0, 0, 0, 0};
-int max_left = 60;
-int max_right = 60 * 0.92;
+int max_right = 70;
+int max_left = 70 * 0.92;
 int state = 0;
 int last_state = 0;
 int spam_counter = 0;
@@ -27,8 +27,8 @@ void forward(){
   pwm_speed[3] = 0;
   pwm_speed[0] += 10;
   pwm_speed[2] += 10;
-  pwm_speed[0] = pwm_speed[0] > max_left ? max_left : pwm_speed[0];
-  pwm_speed[2] = pwm_speed[2] > max_right ? max_right : pwm_speed[2];
+  pwm_speed[0] = pwm_speed[0] > max_right ? max_right : pwm_speed[0];
+  pwm_speed[2] = pwm_speed[2] > max_left ? max_left : pwm_speed[2];
   return;
 }
 
@@ -59,7 +59,7 @@ void right(){
   pwm_speed[0] -= 20;
   pwm_speed[2] += 20;
   pwm_speed[0] = pwm_speed[0] < 0 ? 0 : pwm_speed[0];
-  pwm_speed[2] = pwm_speed[2] > max_right ? max_right : pwm_speed[2];
+  pwm_speed[2] = pwm_speed[2] > max_left ? max_left : pwm_speed[2];
   return;
 }
 
@@ -68,7 +68,7 @@ void left(){
   pwm_speed[3] = 0;
   pwm_speed[0] += 20;
   pwm_speed[2] -= 20;
-  pwm_speed[0] = pwm_speed[0] > max_left ? max_left : pwm_speed[0];
+  pwm_speed[0] = pwm_speed[0] > max_right ? max_right : pwm_speed[0];
   pwm_speed[2] = pwm_speed[2] < 0 ? 0 : pwm_speed[2];
   return;
 }
@@ -79,10 +79,10 @@ void turn_around(){
   pwm_speed[1] = 0;
   pwm_speed[2] = 0;
   pwm_speed[3] = 0;
-  pwm_speed[0] += 40;
-  pwm_speed[3] += 40;
-  pwm_speed[0] = pwm_speed[0] > max_left ? max_left : pwm_speed[0];
-  pwm_speed[3] = pwm_speed[3] > max_right ? max_right : pwm_speed[3];
+  pwm_speed[0] += 10;
+  pwm_speed[3] += 10;
+  pwm_speed[0] = pwm_speed[0] > max_right ? max_right : pwm_speed[0];
+  pwm_speed[3] = pwm_speed[3] > max_left ? max_left : pwm_speed[3];
 }
 
 void loop(){
